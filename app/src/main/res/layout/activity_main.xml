@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_marginBottom="10dp"
-                android:text="Select supported algorithm:"
+                android:text="@string/select_supported_algorithm"
                 android:textSize="18sp" />
 
             <androidx.appcompat.widget.AppCompatSpinner
@@ -90,7 +90,8 @@
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
-                android:text="Example text" />
+                android:text="@string/example_text"
+                tools:ignore="LabelFor" />
 
             <TextView
                 android:id="@+id/signedDocument"
@@ -98,13 +99,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                tools:ignore="SmallSp" />
 
             <Button
                 android:id="@+id/validate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Validate exact"
+                android:text="@string/validate_exact"
                 android:textSize="14sp"
                 tools:layout_conversion_absoluteHeight="48dp"
                 tools:layout_conversion_absoluteWidth="161dp"
@@ -116,7 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:baselineAligned="false"
-                android:text="Shuffle signature and Validate"
+                android:text="@string/shuffle_signature_and_validate"
                 android:textSize="14sp"
                 tools:layout_conversion_absoluteHeight="48dp"
                 tools:layout_conversion_absoluteWidth="215dp"
@@ -128,7 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:baselineAligned="false"
-                android:text="Alter signature length and Validate"
+                android:text="@string/alter_signature_length_and_validate"
                 android:textSize="14sp"
                 tools:layout_conversion_absoluteHeight="48dp"
                 tools:layout_conversion_absoluteWidth="215dp"
