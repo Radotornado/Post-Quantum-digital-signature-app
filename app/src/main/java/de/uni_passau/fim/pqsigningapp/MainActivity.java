@@ -190,14 +190,14 @@ public class MainActivity extends AppCompatActivity {
         Button alter = (Button) findViewById(R.id.alter);
         Button publicKey = (Button) findViewById(R.id.showKey);
 
-        validate.setOnClickListener(view -> verifySignedMessage());
+        validate.setOnClickListener(view -> {
+            // if message has been modified
+            updateSignedMessage();
+            verifySignedMessage();
+        });
         shuffle.setOnClickListener(view -> {
-            // boolean needed, because there is no need to calculate it again (to save time)
-            if (isSignedMessageModified) {
-                // update the signed message (if a previous button modified it)
-                signedMessage = signature.sign(plainTextToSign.getText().toString().getBytes());
-                isSignedMessageModified = false;
-            }
+            // if message has been modified
+            updateSignedMessage();
             // use the included random number generator
             signedMessage = Rand.randombytes(signedMessage.length);
             isSignedMessageModified = true;
@@ -205,18 +205,26 @@ public class MainActivity extends AppCompatActivity {
             verifySignedMessage();
         });
         alter.setOnClickListener(view -> {
-            // boolean needed, because there is no need to calculate it again (to save time)
-            if (isSignedMessageModified) {
-                // update the signed message (if a previous button modified it)
-                signedMessage = signature.sign(plainTextToSign.getText().toString().getBytes());
-                isSignedMessageModified = false;
-            }
+            // if message has been modified
+            updateSignedMessage();
             signedMessage = Arrays.copyOf(signedMessage, signedMessage.length + 1);
             isSignedMessageModified = true;
             updateSignedMessageTextField();
             verifySignedMessage();
         });
         publicKey.setOnClickListener(view -> showHidePublicKey());
+    }
+
+    /**
+     * If a button has modified the signature and another one is pressed after that the message
+     * needs to be calculated once again.
+     */
+    private void updateSignedMessage() {
+        // boolean needed, because there is no need to calculate it again (to save time)
+        if (isSignedMessageModified) {
+            signedMessage = signature.sign(plainTextToSign.getText().toString().getBytes());
+            isSignedMessageModified = false;
+        }
     }
 
     /**
