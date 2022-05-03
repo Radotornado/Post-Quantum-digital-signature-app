@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText plainTextToSign;
     private boolean isPublicKeyShown;
+    private boolean isSignedMessageModified;
 
     /**
      * Initialize the app. This includes fetching all available algorithms, view and
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setTitle("Sign and validate example");
         isPublicKeyShown = false;
+        isSignedMessageModified = false;
 
         algorithms = getAllWantedAlgs();
         initView();
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         algorithmName.setText("Chosen algorithm: " + algorithm.get(0));
         algorithmVersion.setText("Version: " + algorithm.get(1));
         nistLevel.setText("NIST level: " + algorithm.get(2));
-        indCCA.setText("Is EUF-CMA " + algorithm.get(3));
+        indCCA.setText("Is EUF-CMA: " + algorithm.get(3));
         publicKey.setText("Length public key (bytes): " + algorithm.get(4));
         privateKey.setText("Length private key (bytes): " + algorithm.get(5));
         lengthSignature.setText("Maximum length signature (bytes): " + algorithm.get(6));
@@ -190,13 +192,27 @@ public class MainActivity extends AppCompatActivity {
 
         validate.setOnClickListener(view -> verifySignedMessage());
         shuffle.setOnClickListener(view -> {
+            // boolean needed, because there is no need to calculate it again (to save time)
+            if (isSignedMessageModified) {
+                // update the signed message (if a previous button modified it)
+                signedMessage = signature.sign(plainTextToSign.getText().toString().getBytes());
+                isSignedMessageModified = false;
+            }
             // use the included random number generator
             signedMessage = Rand.randombytes(signedMessage.length);
+            isSignedMessageModified = true;
             updateSignedMessageTextField();
             verifySignedMessage();
         });
         alter.setOnClickListener(view -> {
+            // boolean needed, because there is no need to calculate it again (to save time)
+            if (isSignedMessageModified) {
+                // update the signed message (if a previous button modified it)
+                signedMessage = signature.sign(plainTextToSign.getText().toString().getBytes());
+                isSignedMessageModified = false;
+            }
             signedMessage = Arrays.copyOf(signedMessage, signedMessage.length + 1);
+            isSignedMessageModified = true;
             updateSignedMessageTextField();
             verifySignedMessage();
         });
