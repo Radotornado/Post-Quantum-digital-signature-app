@@ -17,26 +17,27 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.liboqs.Rand;
 import com.example.liboqs.Signature;
 import com.example.liboqs.Sigs;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
     /**
-     * Save all algorithms, the chosen one, the cipher (signed message) and public key.
+     * Save all algorithms, the chosen one, the signed message and public key.
      */
     private String[] algorithms;
     private Signature signature;
-    private byte[] cipher;
+    private byte[] signedMessage;
     private byte[] publicKey;
 
     private EditText plainTextToSign;
+    private boolean isPublicKeyShown;
 
     /**
      * Initialize the app. This includes fetching all available algorithms, view and
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("Sign and validate example");
+        isPublicKeyShown = false;
 
         algorithms = getAllWantedAlgs();
         initView();
@@ -103,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         publicKey = signature.generate_keypair();
         setTextViews(signature.get_details());
         handleTextToSign();
+        setPublicKey();
     }
 
     /**
@@ -123,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         algorithmName.setText("Chosen algorithm: " + algorithm.get(0));
         algorithmVersion.setText("Version: " + algorithm.get(1));
         nistLevel.setText("NIST level: " + algorithm.get(2));
-        indCCA.setText("Is IND-CCA: " + algorithm.get(3));
+        indCCA.setText("Is EUF-CMA " + algorithm.get(3));
         publicKey.setText("Length public key (bytes): " + algorithm.get(4));
         privateKey.setText("Length private key (bytes): " + algorithm.get(5));
         lengthSignature.setText("Maximum length signature (bytes): " + algorithm.get(6));
@@ -154,70 +157,62 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Signs the plaintext, assigns it and updates the text field that shows the cipher in UTF-8.
+     * Signs the plaintext, assigns it and updates the text field that shows the signed
+     * message in UTF-8.
      */
     private void sign() {
         plainTextToSign = findViewById(R.id.document);
-        cipher = signature.sign(plainTextToSign.getText().toString().getBytes());
-        updateCipherTextField();
+        signedMessage = signature.sign(plainTextToSign.getText().toString().getBytes());
+        updateSignedMessageTextField();
     }
 
     /**
-     * Update the cipher upon change.
+     * Update the signed message upon change.
      */
-    private void updateCipherTextField() {
+    private void updateSignedMessageTextField() {
         TextView signedDocument = findViewById(R.id.signedDocument);
         signedDocument.setText(
-                new String(Base64.encode(cipher, Base64.DEFAULT), StandardCharsets.UTF_8));
+                new String(Base64.encode(signedMessage, Base64.DEFAULT), StandardCharsets.UTF_8));
     }
 
     /**
      * Assigns a listener for every button.
-     * The first only validates the signature, the second one shuffles the bytes inside and tries
-     * to validate it (in order to trigger a false signature) and the third one deletes the last bit
+     * The first only validates the signature, the second one shows or hides the public key,
+     * the third one shuffles the bytes inside and tries to validate it
+     * (in order to trigger a false signature) and the fourth one deletes the last bit
      * in order to trigger a RuntimeException.
      */
     private void initButtons() {
         Button validate = (Button) findViewById(R.id.validate);
         Button shuffle = (Button) findViewById(R.id.shuffle);
         Button alter = (Button) findViewById(R.id.alter);
+        Button publicKey = (Button) findViewById(R.id.showKey);
 
-        validate.setOnClickListener(view -> verifyCipher());
+        validate.setOnClickListener(view -> verifySignedMessage());
         shuffle.setOnClickListener(view -> {
-            shuffleCipher();
-            updateCipherTextField();
-            verifyCipher();
+            // use the included random number generator
+            signedMessage = Rand.randombytes(signedMessage.length);
+            updateSignedMessageTextField();
+            verifySignedMessage();
         });
         alter.setOnClickListener(view -> {
-            cipher = Arrays.copyOf(cipher, cipher.length + 1);
-            updateCipherTextField();
-            verifyCipher();
+            signedMessage = Arrays.copyOf(signedMessage, signedMessage.length + 1);
+            updateSignedMessageTextField();
+            verifySignedMessage();
         });
+        publicKey.setOnClickListener(view -> showHidePublicKey());
     }
 
     /**
-     * Just a typical shuffle of an array.
+     * Tries to verify the signed message with the plain text message, signed message and public key.
      */
-    private void shuffleCipher() {
-        Random rnd = new Random();
-        for (int i = cipher.length - 1; i > 0; i--) {
-            int index = rnd.nextInt(i + 1);
-            byte a = cipher[index];
-            cipher[index] = cipher[i];
-            cipher[i] = a;
-        }
-    }
-
-    /**
-     * Tries to verify the cipher with the plain text message, cipher and public key.
-     */
-    private void verifyCipher() {
+    private void verifySignedMessage() {
         byte[] message = plainTextToSign.getText().toString().getBytes();
         TextView isValidated = findViewById(R.id.isValidated);
-        if (cipher != null) {
+        if (signedMessage != null) {
             String output;
             try {
-                boolean verified = signature.verify(message, cipher, publicKey);
+                boolean verified = signature.verify(message, signedMessage, publicKey);
                 output = verified ? "Signature is valid."
                         : "Signature is not valid, but key and signature length are right.";
             } catch (RuntimeException e) {
@@ -225,6 +220,34 @@ public class MainActivity extends AppCompatActivity {
                         + " (RuntimeException was thrown).";
             }
             isValidated.setText(output);
+        }
+    }
+
+    /**
+     * Shows or hides the public key.
+     */
+    private void showHidePublicKey() {
+        TextView publicKeyField = findViewById(R.id.publicKeyField);
+        if (publicKeyField.getText().equals("")) {
+            isPublicKeyShown = true;
+            setPublicKey();
+        } else {
+            isPublicKeyShown = false;
+            publicKeyField.setText("");
+        }
+    }
+
+    /**
+     * Updates the public key if it is shown.
+     */
+    @SuppressLint("SetTextI18n")
+    private void setPublicKey() {
+        if (isPublicKeyShown) {
+            String publicKeyAsString = new String(
+                    Base64.encode(publicKey, Base64.DEFAULT),
+                    StandardCharsets.UTF_8);
+            TextView publicKeyField = findViewById(R.id.publicKeyField);
+            publicKeyField.setText("Public key: " + publicKeyAsString);
         }
     }
 }
