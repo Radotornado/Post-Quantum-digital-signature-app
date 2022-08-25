@@ -6,10 +6,10 @@ PQSigningApp is created as an unofficial test app for the [open-quantum-safe/lib
 
 The project is split into two parts:
 - the wrapper for the JNI interface to use liboqs for Android [liboqs-android](https://github.com/Radotornado/Post-Quantum-digital-signature-app/tree/master/liboqs-android), which is essentially [open-quantum-safe/liboqs-java](https://github.com/open-quantum-safe/liboqs-java) with some minor modifications (mostly package changes and a different loading of liboqs.so). The prebuild liboqs.so files are generated with [build-android.sh](https://github.com/open-quantum-safe/liboqs/blob/main/scripts/build-android.sh) manually;
-- the main application, consisting of a signle main activity and XML layout.
+- the main application, consisting of a single main activity and XML layout.
 
 ## How to use
-Upon opening the application you are greeted with a dropdown with all supported algorithms. They are filtered to only show the [NIST finalists](https://csrc.nist.gov/projects/post-quantum-cryptography/round-3-submissions) in the third round. When an algorithm is chosen lower is given the following info about it:
+Upon opening the application, you are greeted with a dropdown with all supported algorithms. They are filtered to only show the [NIST finalists](https://csrc.nist.gov/projects/post-quantum-cryptography/round-3-submissions) in the third round. When an algorithm is chosen lower is given the following info about it:
 - The full name of the signature scheme;
 - The version (last git commit);
 - The NIST security level (1, 2, 3, 4, 5) claimed in this algorithm's original NIST submission;
@@ -18,12 +18,12 @@ Upon opening the application you are greeted with a dropdown with all supported 
 - The (maximum) length, in bytes, of secret keys for this signature scheme;
 - The (maximum) length, in bytes, of signatures for this signature scheme.
 
-Further down there is a text field with example, changable text, which serves as the message to be signed. Under it there is the signature, represented in ASCII characters. 
-The main controls are under the sidned message: 
+Further down there is a text field with example, changeable text, which serves as the message to be signed. Under it there is the signature, represented in ASCII characters. 
+The main controls are under the signed message: 
 - The first button ```Validate exact``` validates the unmodified signature, using the message, signature and public key;
 - The second button ```Show/Hide public key``` shows and hides the generated public key (keep in mind that the public key for Rainbow is usually very big and showing/calculating it will slow your phone down);
-- The third button ```Shuffle signature and validate``` randomly shuffles the bits inside the signature and tries to validate it. An appropriate message is thrown. This simulates a scenario, when sertificate of the right length is given, but it is not correct.
-- The last button ```Alter signature length and valdate``` adds one extra bit at the end of the signature. As this is not accepted it triggers a handled *RuntimeException* and an aproppriate message is shown.
+- The third button ```Shuffle signature and validate``` randomly shuffles the bits inside the signature and tries to validate it. An appropriate message is thrown. This simulates a scenario, when certificate of the right length is given, but it is not correct.
+- The last button ```Alter signature length and validate``` adds one extra bit at the end of the signature. As this is not accepted it triggers a handled *RuntimeException* and an appropriate message is shown.
 
 ## Screenshots
 <p float="left" align="middle">
