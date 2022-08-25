@@ -17,9 +17,9 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.liboqs.Rand;
-import com.example.liboqs.Signature;
-import com.example.liboqs.Sigs;
+import org.openquantumsafe.Rand;
+import org.openquantumsafe.Signature;
+import org.openquantumsafe.Sigs;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         List<String> algs = Sigs.get_enabled_sigs();
         algs = algs.stream()
                 .filter(e -> e.toLowerCase().contains("dilithium")
-                        || e.toLowerCase().contains("rainbow")
+                        || e.toLowerCase().contains("sphincs")
                         || e.toLowerCase().contains("falcon"))
                 .collect(Collectors.toList());
         return algs.toArray(new String[0]);
@@ -102,36 +102,13 @@ public class MainActivity extends AppCompatActivity {
      * @param chosenAlgorithmIndex The index from the dropdown.
      */
     private void selectSigner(final int chosenAlgorithmIndex) {
+        TextView algorithmName = findViewById(R.id.algorithmName);
         String chosenAlgorithm = algorithms[chosenAlgorithmIndex];
         signature = new Signature(chosenAlgorithm);
         publicKey = signature.generate_keypair();
-        setTextViews(signature.get_details());
+        algorithmName.setText(signature.get_details());
         handleTextToSign();
         setPublicKey();
-    }
-
-    /**
-     * Sets the information about the chosen algorithm.
-     *
-     * @param algorithm The chosen algorithm.
-     */
-    @SuppressLint("SetTextI18n")
-    private void setTextViews(final List<String> algorithm) {
-        TextView algorithmName = findViewById(R.id.algorithmName);
-        TextView algorithmVersion = findViewById(R.id.algorithmVersion);
-        TextView nistLevel = findViewById(R.id.nistLevel);
-        TextView indCCA = findViewById(R.id.indCCA);
-        TextView publicKey = findViewById(R.id.publicKey);
-        TextView privateKey = findViewById(R.id.privateKey);
-        TextView lengthSignature = findViewById(R.id.lengthSignature);
-
-        algorithmName.setText("Chosen algorithm: " + algorithm.get(0));
-        algorithmVersion.setText("Version: " + algorithm.get(1));
-        nistLevel.setText("NIST level: " + algorithm.get(2));
-        indCCA.setText("Is EUF-CMA: " + algorithm.get(3));
-        publicKey.setText("Length public key (bytes): " + algorithm.get(4));
-        privateKey.setText("Length private key (bytes): " + algorithm.get(5));
-        lengthSignature.setText("Maximum length signature (bytes): " + algorithm.get(6));
     }
 
     /**

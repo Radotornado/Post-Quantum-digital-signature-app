@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import com.example.liboqs.Signature;
+import com.example.openquantumsafe.Signature;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

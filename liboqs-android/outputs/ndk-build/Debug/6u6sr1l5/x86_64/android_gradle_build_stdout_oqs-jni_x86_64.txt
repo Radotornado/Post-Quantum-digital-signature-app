@@ -4,5 +4,4 @@
 [x86_64] Compile        : oqs-jni <= Rand.c
 [x86_64] Compile        : oqs-jni <= Signature.c
 [x86_64] Compile        : oqs-jni <= Sigs.c
-[x86_64] Prebuilt       : liboqs.so <= D:/CurrentCode/PQSigningApp/liboqs-android/jni/jniLibs/x86_64/
 [x86_64] SharedLibrary  : liboqs-jni.so
