@@ -17,6 +17,8 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.microsoft.snippet.Snippet;
+
 import org.openquantumsafe.Rand;
 import org.openquantumsafe.Signature;
 import org.openquantumsafe.Sigs;
@@ -24,6 +26,7 @@ import org.openquantumsafe.Sigs;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +51,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (BuildConfig.DEBUG) {
+            Snippet.install(new Snippet.MeasuredExecutionPath());
+            Snippet.newFilter("SampleFilter");
+            Snippet.addFlag(Snippet.FLAG_METADATA_LINE | Snippet.FLAG_METADATA_THREAD_INFO);
+        }
+
+        // There are cases where the code flow is spread across different files,
+        // in those kind of scenarios we use tag based startCapture call.
+        // We can then use find() with the tag and end the capture.
+        // It handles the case, when start capture is not called in warm launches and find() and endCapture()
+        // are called. In those case the calls to find() and endCapture() are no-op.
+
+
         setContentView(R.layout.activity_main);
         setTitle("Sign and validate example");
         isPublicKeyShown = false;
@@ -104,11 +121,11 @@ public class MainActivity extends AppCompatActivity {
     private void selectSigner(final int chosenAlgorithmIndex) {
         TextView algorithmName = findViewById(R.id.algorithmName);
         String chosenAlgorithm = algorithms[chosenAlgorithmIndex];
-        signature = new Signature(chosenAlgorithm);
-        publicKey = signature.generate_keypair();
-        algorithmName.setText(signature.get_details());
-        handleTextToSign();
-        setPublicKey();
+            signature = new Signature(chosenAlgorithm);
+            publicKey = signature.generate_keypair();
+            algorithmName.setText(signature.get_details());
+            handleTextToSign();
+            setPublicKey();
     }
 
     /**

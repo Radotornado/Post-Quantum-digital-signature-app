@@ -17,8 +17,12 @@ android {
 
     buildTypes {
         release {
+            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
         }
     }
     compileOptions {
@@ -34,8 +38,10 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.android.material:material:1.3.0'
     implementation project(path: ':liboqs-android')
+    implementation 'com.github.microsoft:snippet-timekeeper:v1.0'
+    implementation 'com.jerolba:jmnemohistosyne:0.2.3'
 
-    testImplementation 'junit:junit:4.13.2'
+    implementation 'junit:junit:4.13.2'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
