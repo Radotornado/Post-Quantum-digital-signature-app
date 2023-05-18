@@ -63,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
         // We can then use find() with the tag and end the capture.
         // It handles the case, when start capture is not called in warm launches and find() and endCapture()
         // are called. In those case the calls to find() and endCapture() are no-op.
-
-
         setContentView(R.layout.activity_main);
         setTitle("Sign and validate example");
         isPublicKeyShown = false;

@@ -1,10 +1,9 @@
 package de.uni_passau.fim.pqsigningapp;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.example.openquantumsafe.Signature;
+import org.openquantumsafe.Signature;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
