@@ -1,6 +1,9 @@
 # Post-Quantum digital signature app
 This is an Android app, created as a proof of concept for digital signing with post quantum algorithms selected by [NIST](https://csrc.nist.gov/projects/post-quantum-cryptography/round-3-submissions).
 
+It is part of the paper I wrote about the implementing of Post-Quantum-Cryptography Algorithms. 
+It got published in the Conference for Omni-Layer Intelligent Systems 2023 and you can read it [here](https://doi.org/10.1109/COINS57856.2023.10189254).
+
 ## Description
 PQSigningApp is created as an unofficial test app for the [open-quantum-safe/liboqs](https://github.com/open-quantum-safe/liboqs) open source C library for quantum-safe cryptographic algorithms created by [oOpen Quantum Safe project](https://openquantumsafe.org). It is implemented through the Java wrapper [open-quantum-safe/liboqs-java](https://github.com/open-quantum-safe/liboqs-java).
 
